@@ -583,23 +583,6 @@
                 align-items: center;
             }
         }
-        
-        /* 修复空白页问题 */
-        .fix-blank-section {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 20px;
-            margin-top: 20px;
-            border-left: 4px solid #e63946;
-        }
-        
-        .fix-title {
-            color: #e63946;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
     </style>
 </head>
 <body>
@@ -611,7 +594,7 @@
                 </div>
                 <div>
                     <h1>SecureChat</h1>
-                    <p class="subtitle">端对端加密即时聊天 - 修复空白页面问题</p>
+                    <p class="subtitle">端对端加密即时聊天 - 您的消息只有接收方可以解密</p>
                 </div>
             </div>
         </header>
@@ -621,17 +604,38 @@
             <span>此页面已针对移动设备优化，可在手机上流畅使用</span>
         </div>
         
-        <!-- 修复空白页面问题说明 -->
-        <div class="fix-blank-section">
-            <h2 class="fix-title"><i class="fas fa-exclamation-triangle"></i> 空白页面问题已修复</h2>
-            <p>如果您之前遇到空白页面问题，可能是因为：</p>
-            <ul style="margin: 15px 0 15px 20px;">
-                <li>GitHub Pages配置不正确</li>
-                <li>HTML文件未放在仓库根目录</li>
-                <li>文件名未使用index.html</li>
-                <li>文件路径大小写问题</li>
-            </ul>
-            <p>按照下面的部署指南操作，即可解决此问题。</p>
+        <!-- 加密过程可视化 -->
+        <div class="encryption-visual">
+            <div class="visual-step">
+                <div class="visual-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="visual-text">用户输入消息</div>
+            </div>
+            <div class="visual-step">
+                <div class="visual-icon">
+                    <i class="fas fa-key"></i>
+                </div>
+                <div class="visual-text">生成加密密钥</div>
+            </div>
+            <div class="visual-step">
+                <div class="visual-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div class="visual-text">加密消息内容</div>
+            </div>
+            <div class="visual-step">
+                <div class="visual-icon">
+                    <i class="fas fa-share-alt"></i>
+                </div>
+                <div class="visual-text">安全传输</div>
+            </div>
+            <div class="visual-step">
+                <div class="visual-icon">
+                    <i class="fas fa-unlock"></i>
+                </div>
+                <div class="visual-text">接收方解密</div>
+            </div>
         </div>
         
         <!-- 聊天区域 -->
@@ -658,12 +662,12 @@
                 <div class="messages-container" id="alice-messages">
                     <div class="message received">
                         <div class="sender">Bob</div>
-                        <div class="content">你好 Alice！空白页面问题已修复。</div>
+                        <div class="content">你好 Alice！我们的对话是端对端加密的。</div>
                         <div class="time">12:00 PM</div>
                     </div>
                     <div class="message sent">
                         <div class="sender">Alice</div>
-                        <div class="content">太好了！现在我们可以测试端对端加密了。</div>
+                        <div class="content">我知道，这太棒了！没有人能窃听我们的对话。</div>
                         <div class="time">12:01 PM</div>
                     </div>
                 </div>
@@ -698,12 +702,12 @@
                 <div class="messages-container" id="bob-messages">
                     <div class="message sent">
                         <div class="sender">Bob</div>
-                        <div class="content">你好 Alice！空白页面问题已修复。</div>
+                        <div class="content">你好 Alice！我们的对话是端对端加密的。</div>
                         <div class="time">12:00 PM</div>
                     </div>
                     <div class="message received">
                         <div class="sender">Alice</div>
-                        <div class="content">太好了！现在我们可以测试端对端加密了。</div>
+                        <div class="content">我知道，这太棒了！没有人能窃听我们的对话。</div>
                         <div class="time">12:01 PM</div>
                     </div>
                 </div>
@@ -714,6 +718,41 @@
                         <i class="fas fa-paper-plane"></i>
                     </button>
                 </div>
+            </div>
+        </div>
+        
+        <!-- 调试面板 -->
+        <div class="debug-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <i class="fas fa-bug"></i>
+                    <span>加密调试信息</span>
+                </div>
+                <div class="status">
+                    <i class="fas fa-circle" style="color: #4cc9f0; font-size: 12px;"></i>
+                    <span>安全连接</span>
+                </div>
+            </div>
+            
+            <div class="debug-info" id="debug-info">
+// 系统初始化中...
+// 正在生成RSA密钥对...
+// 正在建立安全连接...
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn" id="gen-keys-btn">
+                    <i class="fas fa-key"></i>
+                    <span>生成新密钥</span>
+                </button>
+                <button class="btn" id="simulate-btn">
+                    <i class="fas fa-comments"></i>
+                    <span>模拟对话</span>
+                </button>
+                <button class="btn btn-primary" id="clear-btn">
+                    <i class="fas fa-trash"></i>
+                    <span>清除记录</span>
+                </button>
             </div>
         </div>
         
@@ -728,17 +767,15 @@
                 <div class="step-card">
                     <h3><span class="step-number">1</span> 保存文件</h3>
                     <div class="step-content">
-                        <p>将本页<strong>另存为index.html</strong>文件</p>
-                        <p>（右键点击页面 → 另存为 → 文件名：index.html）</p>
+                        <p>右键点击页面空白处 → 选择"另存为" → 保存为 <code>securechat.html</code></p>
                     </div>
                 </div>
                 
                 <div class="step-card">
-                    <h3><span class="step-number">2</span> 创建GitHub仓库</h3>
+                    <h3><span class="step-number">2</span> 上传到GitHub</h3>
                     <div class="step-content">
-                        <p>登录GitHub → 创建新仓库</p>
-                        <p>仓库名称：secure-chat（或其他名称）</p>
-                        <div class="url-display">https://github.com/your-username/secure-chat</div>
+                        <p>登录GitHub → 创建新仓库 → 上传HTML文件</p>
+                        <div class="url-display">https://github.com/your-username/your-repo</div>
                         <button class="copy-btn" id="copy-github">
                             <i class="fas fa-copy"></i>
                             <span>复制URL模板</span>
@@ -747,23 +784,25 @@
                 </div>
                 
                 <div class="step-card">
-                    <h3><span class="step-number">3</span> 上传文件</h3>
+                    <h3><span class="step-number">3</span> 启用Pages</h3>
                     <div class="step-content">
-                        <p>在仓库中点击"Add file" → "Upload files"</p>
-                        <p>上传<strong>index.html</strong>文件</p>
-                        <p>确保文件在仓库根目录</p>
+                        <p>仓库设置 → Pages → 选择main分支 → 保存</p>
+                        <div class="url-display">https://your-username.github.io/your-repo/securechat.html</div>
+                        <button class="copy-btn" id="copy-pages">
+                            <i class="fas fa-copy"></i>
+                            <span>复制URL模板</span>
+                        </button>
                     </div>
                 </div>
                 
                 <div class="step-card">
-                    <h3><span class="step-number">4</span> 启用GitHub Pages</h3>
+                    <h3><span class="step-number">4</span> 分享测试</h3>
                     <div class="step-content">
-                        <p>仓库设置 → Pages → 分支：main，目录：/(root)</p>
-                        <p>保存后等待1-2分钟</p>
-                        <div class="url-display">https://your-username.github.io/secure-chat/</div>
-                        <button class="copy-btn" id="copy-pages">
+                        <p>将URL发送给测试伙伴，双方同时打开链接</p>
+                        <div class="url-display">https://your-username.github.io/your-repo/securechat.html</div>
+                        <button class="copy-btn" id="copy-share">
                             <i class="fas fa-copy"></i>
-                            <span>复制URL模板</span>
+                            <span>复制分享链接</span>
                         </button>
                     </div>
                 </div>
@@ -785,19 +824,7 @@
                         </div>
                         <div class="step-text">
                             <h4>1. 共享链接</h4>
-                            <p>将GitHub Pages URL发送给测试伙伴</p>
-                            <p>格式：https://your-username.github.io/secure-chat/</p>
-                        </div>
-                    </div>
-                    
-                    <div class="guide-step">
-                        <div class="step-icon">
-                            <i class="fas fa-mobile-alt"></i>
-                        </div>
-                        <div class="step-text">
-                            <h4>2. 手机访问</h4>
-                            <p>在手机浏览器中直接打开URL</p>
-                            <p>或扫描二维码（使用二维码生成工具）</p>
+                            <p>将GitHub Pages生成的URL发送给测试伙伴，双方同时打开页面</p>
                         </div>
                     </div>
                     
@@ -806,7 +833,7 @@
                             <i class="fas fa-user-friends"></i>
                         </div>
                         <div class="step-text">
-                            <h4>3. 角色分配</h4>
+                            <h4>2. 角色分配</h4>
                             <p>一人使用Alice界面（左侧），另一人使用Bob界面（右侧）</p>
                         </div>
                     </div>
@@ -816,8 +843,18 @@
                             <i class="fas fa-comment"></i>
                         </div>
                         <div class="step-text">
-                            <h4>4. 开始聊天</h4>
+                            <h4>3. 开始聊天</h4>
                             <p>在您的界面输入消息并发送，观察对方界面接收到的解密消息</p>
+                        </div>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <div class="step-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="step-text">
+                            <h4>4. 验证安全</h4>
+                            <p>查看调试面板，了解加密/解密过程，确认消息在传输中始终加密</p>
                         </div>
                     </div>
                 </div>
@@ -825,7 +862,7 @@
         </div>
         
         <footer>
-            <p>SecureChat &copy; 2023 | 端对端加密即时聊天系统 | 空白页面问题已修复</p>
+            <p>SecureChat &copy; 2023 | 端对端加密即时聊天系统 | 使用Web Crypto API实现</p>
         </footer>
     </div>
 
@@ -1099,7 +1136,7 @@
                 const messages = [
                     { from: 'Alice', to: 'Bob', text: '你好 Bob！' },
                     { from: 'Bob', to: 'Alice', text: '你好 Alice！' },
-                    { from: 'Alice', to: 'Bob', text: '空白页面问题已解决，现在可以正常测试了' },
+                    { from: 'Alice', to: 'Bob', text: '这是一个端对端加密的聊天测试' },
                     { from: 'Bob', to: 'Alice', text: '是的，我们的消息在传输过程中是加密的' },
                     { from: 'Alice', to: 'Bob', text: '即使服务器被入侵，攻击者也无法读取我们的消息内容' },
                     { from: 'Bob', to: 'Alice', text: '完全正确！这就是端对端加密的强大之处' }
@@ -1127,13 +1164,18 @@
             
             // 复制URL按钮
             document.getElementById('copy-github').addEventListener('click', () => {
-                navigator.clipboard.writeText('https://github.com/your-username/secure-chat');
+                navigator.clipboard.writeText('https://github.com/your-username/your-repo');
                 debugLog('[System] GitHub URL模板已复制');
             });
             
             document.getElementById('copy-pages').addEventListener('click', () => {
-                navigator.clipboard.writeText('https://your-username.github.io/secure-chat/');
+                navigator.clipboard.writeText('https://your-username.github.io/your-repo/securechat.html');
                 debugLog('[System] GitHub Pages URL模板已复制');
+            });
+            
+            document.getElementById('copy-share').addEventListener('click', () => {
+                navigator.clipboard.writeText('https://your-username.github.io/your-repo/securechat.html');
+                debugLog('[System] 分享URL已复制');
             });
         }
         
